@@ -68,7 +68,7 @@ parts:
       - usr/local/share/uhd/*
       - opt/oai-gnb/bin/*
 
-  runtime-deps:
+  tools:
     after:
       - du
     plugin: nil
