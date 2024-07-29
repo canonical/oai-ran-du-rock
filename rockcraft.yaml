@@ -1,4 +1,4 @@
-name: oai-ran-du-rock
+name: oai-ran-du
 base: ubuntu@22.04
 version: '2.1.1'
 summary: OAI RAN DU ROCK
