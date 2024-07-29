@@ -1,6 +1,6 @@
 # OAI RAN Distributed Unit (DU) ROCK
 
-Container image for the OAI RAN Distributed Unit (DU), used in SD-Core UPF.
+Container image for the OAI RAN Distributed Unit (DU).
 
 ## Usage
 
