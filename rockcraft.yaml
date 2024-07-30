@@ -8,6 +8,7 @@ platforms:
   amd64:
 
 environment:
+  OAI_GDBSTACKS: "1"
   TZ: UTC
 
 parts:
@@ -19,6 +20,11 @@ parts:
     build-environment:
       - BUILD_UHD_FROM_SOURCE: "True"
       - UHD_VERSION: "4.4.0.0"
+    overlay-packages:
+      - gdb
+      - libconfig9
+      - libsctp1
+      - libusb-1.0-0
     build-packages:
       - ca-certificates
       - g++-12
@@ -77,5 +83,4 @@ parts:
       - iperf3
       - iproute2
       - iputils-ping
-      - libsctp1
       - net-tools
