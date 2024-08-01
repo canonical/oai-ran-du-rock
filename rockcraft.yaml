@@ -8,6 +8,8 @@ platforms:
   amd64:
 
 environment:
+  DEBIAN_FRONTEND: noninteractive
+  LD_LIBRARY_PATH: "/usr/lib/x86_64-linux-gnu:/usr/local/lib"
   OAI_GDBSTACKS: "1"
   TZ: UTC
 
