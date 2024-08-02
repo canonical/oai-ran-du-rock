@@ -1,0 +1,88 @@
+name: oai-ran-du
+base: ubuntu@22.04
+version: '2.1.1'
+summary: OAI RAN DU ROCK
+license: Apache-2.0
+description: Container image for the OAI RAN Distributed Unit (DU).
+platforms:
+  amd64:
+
+environment:
+  DEBIAN_FRONTEND: noninteractive
+  LD_LIBRARY_PATH: "/usr/lib/x86_64-linux-gnu:/usr/local/lib"
+  OAI_GDBSTACKS: "1"
+  TZ: UTC
+
+parts:
+  du:
+    plugin: nil
+    source: https://gitlab.eurecom.fr/oai/openairinterface5g.git
+    source-type: git
+    source-branch: develop
+    build-environment:
+      - BUILD_UHD_FROM_SOURCE: "True"
+      - UHD_VERSION: "4.4.0.0"
+    overlay-packages:
+      - gdb
+      - libconfig9
+      - libsctp1
+      - libusb-1.0-0
+    build-packages:
+      - ca-certificates
+      - g++-12
+      - gcc-12
+      - openssl
+    override-build: |
+      update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100 --slave /usr/bin/g++ g++ /usr/bin/g++-12
+      /bin/sh oaienv
+      cd cmake_targets && mkdir -p log
+      ./build_oai -I -w USRP --install-optional-packages
+      ./build_oai -c --ninja \
+      --gNB \
+      --build-lib "telnetsrv enbscope uescope nrscope" \
+      -w USRP -t Ethernet \
+      --build-e2 --cmake-opt -DXAPP_MULTILANGUAGE=OFF \
+      --noavx512 \
+      --cmake-opt -DCMAKE_C_FLAGS="-Werror" --cmake-opt -DCMAKE_CXX_FLAGS="-Werror"
+      
+      /usr/local/lib/uhd/utils/uhd_images_downloader.py -t b2xx
+      /usr/local/lib/uhd/utils/uhd_images_downloader.py -t x3xx
+      
+      cp -r ran_build/build $CRAFT_PART_INSTALL
+      cp /usr/local/bin/uhd_find_devices $CRAFT_PART_INSTALL
+      cp /usr/local/lib/libuhd.so.4.4.0 $CRAFT_PART_INSTALL
+      cp -r /usr/local/share/uhd $CRAFT_PART_INSTALL
+    organize:
+      build/liboai_device.so: usr/local/lib/liboai_device.so
+      build/liboai_eth_transpro.so: usr/local/lib/liboai_eth_transpro.so
+      build/librfsimulator.so: usr/local/lib/librfsimulator.so
+      build/liboai_usrpdevif.so: usr/local/lib/liboai_usrpdevif.so
+      build/libcoding.so: usr/local/lib/libcoding.so
+      build/libparams_libconfig.so: usr/local/lib/libparams_libconfig.so
+      build/libdfts.so: usr/local/lib/libdfts.so
+      build/libldpc.so: usr/local/lib/libldpc.so
+      build/libldpc_optim.so: usr/local/lib/libldpc_optim.so
+      build/libldpc_optim8seg.so: usr/local/lib/libldpc_optim8seg.so
+      build/libldpc_orig.so: usr/local/lib/libldpc_orig.so
+      build/libtelnetsrv.so: usr/local/lib/libtelnetsrv.so
+      build/libtelnetsrv_ci.so: usr/local/lib/libtelnetsrv_ci.so
+      uhd/*: usr/local/share/uhd/
+      libuhd.so.4.4.0: usr/local/lib/libuhd.so.4.4.0
+      uhd_find_devices: usr/local/bin/uhd_find_devices
+      build/nr-softmodem: opt/oai-gnb/bin/nr-softmodem
+    stage:
+      - usr/local/bin/uhd_find_devices
+      - usr/local/lib/*
+      - usr/local/share/uhd/*
+      - opt/oai-gnb/bin/*
+
+  tools:
+    after:
+      - du
+    plugin: nil
+    stage-packages:
+      - iperf
+      - iperf3
+      - iproute2
+      - iputils-ping
+      - net-tools
