@@ -32,6 +32,13 @@ parts:
       - g++-12
       - gcc-12
       - openssl
+    stage-packages:
+      - libboost-program-options1.74.0
+      - libboost-chrono1.74.0
+      - libboost-filesystem1.74.0
+      - libboost-serialization1.74.0
+      - libboost-thread1.74.0
+
     override-build: |
       update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100 --slave /usr/bin/g++ g++ /usr/bin/g++-12
       /bin/sh oaienv
