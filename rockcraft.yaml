@@ -18,7 +18,7 @@ parts:
     plugin: nil
     source: https://gitlab.eurecom.fr/oai/openairinterface5g.git
     source-type: git
-    source-branch: develop
+    source-commit: 469d58f989c47eaba42dcfad731e11355329d691
     build-environment:
       - BUILD_UHD_FROM_SOURCE: "True"
       - UHD_VERSION: "4.4.0.0"
