@@ -1,6 +1,6 @@
 name: oai-ran-du
 base: ubuntu@24.04
-version: '2.2.0'
+version: '2.3.0'
 summary: OAI RAN DU ROCK
 license: Apache-2.0
 description: Container image for the OAI RAN Distributed Unit (DU).
